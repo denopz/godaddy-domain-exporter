@@ -33,10 +33,18 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - uses: actions/checkout@v7
+      - name: Verify release version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION="${TAG#v}"
+          grep -Fx "version: ${VERSION}" charts/godaddy-domain-exporter/Chart.yaml
+          grep -Fx "appVersion: ${VERSION}" charts/godaddy-domain-exporter/Chart.yaml
+          grep -Fx "  tag: ${VERSION}" charts/godaddy-domain-exporter/values.yaml
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
         with:
@@ -57,3 +65,9 @@ jobs:
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
+      - name: Package Helm chart
+        run: helm package charts/godaddy-domain-exporter --destination "${RUNNER_TEMP}"
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" "${RUNNER_TEMP}/godaddy-domain-exporter-${GITHUB_REF_NAME#v}.tgz" --verify-tag --title "${GITHUB_REF_NAME}" --generate-notes --latest
