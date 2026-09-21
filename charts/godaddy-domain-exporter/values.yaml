@@ -1,0 +1,13 @@
+godaddyPat: ""
+
+image:
+  repository: ghcr.io/denopz/godaddy-domain-exporter
+  tag: 0.1.0
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
