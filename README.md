@@ -35,9 +35,9 @@ The command passes GODADDY_PAT from the current environment without placing its 
 
 The chart creates one Secret, one Deployment and one ClusterIP Service. It does not create ServiceMonitor, VMServiceScrape or alert rules.
 
-    helm upgrade --install godaddy-domain-exporter ./charts/godaddy-domain-exporter --set-string godaddyPat=${GODADDY_PAT}
+    helm upgrade --install godaddy-domain-exporter https://github.com/denopz/godaddy-domain-exporter/releases/download/v0.1.0/godaddy-domain-exporter-0.1.0.tgz --set-string godaddyPat=${GODADDY_PAT}
 
-The required godaddyPat value is stored in the Kubernetes Secret and in Helm release data. Image coordinates and container resources can be changed through the image and resources values.
+The release asset URL can also be used as chart in Terraform helm_release. The required godaddyPat value is stored in the Kubernetes Secret and in Helm release data. Image coordinates and container resources can be changed through the image and resources values.
 
 ## Metrics
 
